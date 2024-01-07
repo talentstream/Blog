@@ -7,27 +7,29 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
+      with:
+        ref: master
 
     - name: Set up Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v1
       with:
-        node-version: '14'
+        node-version: '12'
 
-    - name: Install Dependencies
+    - name: Setup Hexo
+      env: 
+        ACTION_DEPLOY_KEY: ${{ secrets.HEXO_DEPLOY_KEY }}
       run: |
+        git config --global user.email "447721326@qq.com"
+        git config --global user.name "talentstream"
+        npm install hexo-cli -g
         npm install  # 如果你的博客项目使用 npm
 
-    - name: Build
+    - name: Deploy
       run: |
-        npm run build  # 替换成你构建博客的命令
-
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./path/to/your/generated/files  # 替换成你的生成文件的目录
+        hexo clean
+        hexo deploy
