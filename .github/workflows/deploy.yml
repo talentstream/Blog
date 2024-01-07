@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-lastest
+    runs-on: windows-lastest
     if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
