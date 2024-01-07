@@ -32,7 +32,7 @@ jobs:
         git config --global user.email "447721326@qq.com"
         git config --global user.name "talentstream"
         npm install hexo-cli -g
-        npm install  # 如果你的博客项目使用 npm
+        npm install
 
     - name: Deploy
       run: |
