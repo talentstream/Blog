@@ -5,3 +5,5 @@ node_modules/
 public/
 .deploy*/
 resources/
+gh-pages
+gh-pages.pub
