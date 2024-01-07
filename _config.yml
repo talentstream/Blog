@@ -105,5 +105,5 @@ theme_config:
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repo: https://github.com/talentstream/talentstream.github.io.git
-  branch: main
+  repo: https://github.com/talentstream/Blog.git
+  branch: gh-pages
