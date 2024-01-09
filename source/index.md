@@ -13,7 +13,7 @@ comments: false
 
 ### Interests | **Image Synthesis**, Game Dev, Design
 
-### Compute Skills | C++, C#, Lua, Python, Haskell
+### Coding Languages | C++, C#, Lua, Python
 
 ----
 
