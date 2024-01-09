@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Introduction:本文将探讨一些踩坑点和算法的实现，并不会探讨 Fibonacci 为何，及如何推导公式。 F(n) &#x3D; F(n - 1) + F(n - 2):这算是最容易想到的算法了，时间复杂度为$O(n)$, 用递归空间复杂度会到$O(n)$, 递推会优化到$O(1)$ 。 &lt;&lt;Recursive Function&gt;&gt;int Recursive(in">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fast Fibonacci">
+<meta property="og:url" content="http://example.com/2024/01/07/Fast-Fibonacci/index.html">
+<meta property="og:site_name" content="TALENTSTREAM">
+<meta property="og:description" content="Introduction:本文将探讨一些踩坑点和算法的实现，并不会探讨 Fibonacci 为何，及如何推导公式。 F(n) &#x3D; F(n - 1) + F(n - 2):这算是最容易想到的算法了，时间复杂度为$O(n)$, 用递归空间复杂度会到$O(n)$, 递推会优化到$O(1)$ 。 &lt;&lt;Recursive Function&gt;&gt;int Recursive(in">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/talentstream/PictureCDN/OSTEP/20240108104029.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/talentstream/PictureCDN/OSTEP/20240108104450.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/talentstream/PictureCDN/OSTEP/20240108105825.png">
+<meta property="article:published_time" content="2024-01-07T15:31:17.000Z">
+<meta property="article:modified_time" content="2024-01-08T15:38:30.304Z">
+<meta property="article:author" content="TalentStream">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/talentstream/PictureCDN/OSTEP/20240108104029.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Fast Fibonacci</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="TALENTSTREAM" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blog</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2024/01/09/The-Way-to-Read-Papers/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2023/05/28/TSP/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/01/07/Fast-Fibonacci/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/01/07/Fast-Fibonacci/&text=Fast Fibonacci"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/01/07/Fast-Fibonacci/&title=Fast Fibonacci"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/01/07/Fast-Fibonacci/&is_video=false&description=Fast Fibonacci"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Fast Fibonacci&body=Check out this article: http://example.com/2024/01/07/Fast-Fibonacci/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/01/07/Fast-Fibonacci/&title=Fast Fibonacci"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/01/07/Fast-Fibonacci/&title=Fast Fibonacci"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/01/07/Fast-Fibonacci/&title=Fast Fibonacci"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/01/07/Fast-Fibonacci/&title=Fast Fibonacci"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/01/07/Fast-Fibonacci/&name=Fast Fibonacci&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/01/07/Fast-Fibonacci/&t=Fast Fibonacci"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Introduction"><span class="toc-number">1.</span> <span class="toc-text">Introduction:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#F-n-x3D-F-n-1-F-n-2"><span class="toc-number">2.</span> <span class="toc-text">F(n) &#x3D; F(n - 1) + F(n - 2):</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Matrix-Exponentiation"><span class="toc-number">3.</span> <span class="toc-text">Matrix Exponentiation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Conclusion"><span class="toc-number">4.</span> <span class="toc-text">Conclusion</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Reference"><span class="toc-number">5.</span> <span class="toc-text">Reference:</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Fast Fibonacci
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">TalentStream</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-01-07T15:31:17.000Z" class="dt-published" itemprop="datePublished">2024-01-07</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction:"></a>Introduction:</h3><p>本文将探讨一些踩坑点和算法的实现，并不会探讨 Fibonacci 为何，及如何推导公式。</p>
+<h3 id="F-n-x3D-F-n-1-F-n-2"><a href="#F-n-x3D-F-n-1-F-n-2" class="headerlink" title="F(n) &#x3D; F(n - 1) + F(n - 2):"></a>F(n) &#x3D; F(n - 1) + F(n - 2):</h3><p>这算是最容易想到的算法了，时间复杂度为$O(n)$, 用递归空间复杂度会到$O(n)$, 递推会优化到$O(1)$ 。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">&lt;&lt;Recursive Function&gt;&gt;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">Recursive</span><span class="params">(<span class="type">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    &lt;&lt;end condition&gt;&gt;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Recursive</span>(n - <span class="number">1</span>) + <span class="built_in">Recursive</span>(n - <span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&lt;&lt;DP Function&gt;&gt;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">DP</span><span class="params">(<span class="type">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    &lt;&lt;<span class="number">0</span>,<span class="number">1</span> condition&gt;&gt;</span><br><span class="line">    <span class="keyword">for</span> i,n</span><br><span class="line">        <span class="keyword">new</span> = old1 + old2</span><br><span class="line">        &lt;&lt;swap <span class="keyword">new</span>,old1,old2&gt;&gt;</span><br><span class="line">    <span class="keyword">return</span> old1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Matrix-Exponentiation"><a href="#Matrix-Exponentiation" class="headerlink" title="Matrix Exponentiation"></a>Matrix Exponentiation</h3><p>通过将递推公式转化为矩阵乘法的形式，由于格式很完美，可以推出 $n$ 次项通式, 具体证明可看参考。</p>
+<p>这里需要注意的是，这个公式只适用于$0,1,1,2..$ 这个数列,如果以其他为起始的话，推出的公式并不是很通用<br>比如以$5,5,10..$ 这样的数列，展开的矩阵会不太通用<br><img src="https://cdn.jsdelivr.net/gh/talentstream/PictureCDN/OSTEP/20240108104029.png"></p>
+<p>撇开其他数列，回到原来的数列，矩阵形式$a^n$十分适合做<strong>快速幂</strong>。时间复杂度为$O(log_2N)$</p>
+<p><img src="https://cdn.jsdelivr.net/gh/talentstream/PictureCDN/OSTEP/20240108104450.png"></p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">&lt;&lt;MatrixExponentiation Function&gt;&gt;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">MatrixExponentiation</span><span class="params">(<span class="type">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    &lt;&lt;init&gt;&gt;</span><br><span class="line">    matrix2 orig = &#123;&#123;<span class="number">1</span>,<span class="number">1</span>&#125;,&#123;<span class="number">1</span>,<span class="number">0</span>&#125;&#125;;</span><br><span class="line">    matrix2 result = &#123;&#123;<span class="number">1</span>,<span class="number">0</span>&#125;,&#123;<span class="number">0</span>,<span class="number">1</span>&#125;&#125;;</span><br><span class="line">    &lt;&lt;FastPow&gt;&gt;</span><br><span class="line">        &lt;&lt;matrix pow&gt;&gt;</span><br><span class="line">    &lt;&lt;FastPow&gt;&gt;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>矩阵幂推出的算法，我们可以借此推一个通项公式，虽然时间复杂度不变，但是可以获得一点常数级的优化（避免做矩阵乘法）</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">&lt;&lt;FastFib Function&gt;&gt;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">FastFib</span><span class="params">(<span class="type">int</span> counter)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    &lt;&lt;end condition&gt;&gt;</span><br><span class="line">    <span class="function"><span class="keyword">if</span> even counter <span class="keyword">return</span> <span class="title">Fn</span><span class="params">(<span class="number">2F</span>n+<span class="number">1</span> - Fn)</span></span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="built_in">return</span> (Fn+<span class="number">1</span>)^<span class="number">2</span> + (Fn)^<span class="number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h3><p>当然，还可以借以上推出通用公式$f_n &#x3D; xf_{n-1} + yf_{n-2}$，不过要符合以下形式</p>
+<p><img src="https://cdn.jsdelivr.net/gh/talentstream/PictureCDN/OSTEP/20240108105825.png"></p>
+<p>还有一些需要注意的点</p>
+<p>当数字很大的时候，因为要进行大数运算，所以需要乘一个$O(n)$ 的复杂度，此时，快速矩阵幂的速度会比通项公式慢很多。在<strong>小规模（在100以内）</strong>的时候，用dp即可，因为矩阵乘法也会耗时。当大数时，可以使用<strong>Karatsuba multiplication</strong>，相对于普通乘法$O(n^2)$的时间复杂度，可以优化到$O(n^{log_23}) \approx O(n^{1.58})$ 的时间复杂度,简单来说就是做二分，然后每次二分做三次乘法运算。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">Karatsuba</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span></span></span><br><span class="line"><span class="function">    <span class="comment">// b 为 10, 10进制</span></span></span><br><span class="line"><span class="function">    &lt;&lt;<span class="keyword">if</span> x, y low, <span class="keyword">do</span> naive&gt;&gt;</span></span><br><span class="line"><span class="function">    &lt;&lt;get highbits &amp; lowbits <span class="keyword">for</span> x,y&gt;&gt;</span></span><br><span class="line"><span class="function">    &lt;&lt;recursive <span class="keyword">for</span> a,d,e&gt;&gt;</span></span><br><span class="line"><span class="function">    <span class="keyword">return</span> a*b^n + e*b^<span class="params">(n/<span class="number">2</span>)</span> + d</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference:"></a>Reference:</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://brilliant.org/wiki/fast-fibonacci-transform/">https://brilliant.org/wiki/fast-fibonacci-transform/</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.nayuki.io/page/fast-fibonacci-algorithms">https://www.nayuki.io/page/fast-fibonacci-algorithms</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Fibonacci_sequence#Other">https://en.wikipedia.org/wiki/Fibonacci_sequence#Other</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.nayuki.io/page/karatsuba-multiplication">https://www.nayuki.io/page/karatsuba-multiplication</a></li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/archives/">Blog</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Introduction"><span class="toc-number">1.</span> <span class="toc-text">Introduction:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#F-n-x3D-F-n-1-F-n-2"><span class="toc-number">2.</span> <span class="toc-text">F(n) &#x3D; F(n - 1) + F(n - 2):</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Matrix-Exponentiation"><span class="toc-number">3.</span> <span class="toc-text">Matrix Exponentiation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Conclusion"><span class="toc-number">4.</span> <span class="toc-text">Conclusion</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Reference"><span class="toc-number">5.</span> <span class="toc-text">Reference:</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2024/01/07/Fast-Fibonacci/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2024/01/07/Fast-Fibonacci/&text=Fast Fibonacci"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2024/01/07/Fast-Fibonacci/&title=Fast Fibonacci"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2024/01/07/Fast-Fibonacci/&is_video=false&description=Fast Fibonacci"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Fast Fibonacci&body=Check out this article: http://example.com/2024/01/07/Fast-Fibonacci/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2024/01/07/Fast-Fibonacci/&title=Fast Fibonacci"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2024/01/07/Fast-Fibonacci/&title=Fast Fibonacci"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2024/01/07/Fast-Fibonacci/&title=Fast Fibonacci"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2024/01/07/Fast-Fibonacci/&title=Fast Fibonacci"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2024/01/07/Fast-Fibonacci/&name=Fast Fibonacci&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2024/01/07/Fast-Fibonacci/&t=Fast Fibonacci"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024
+    TalentStream
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blog</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

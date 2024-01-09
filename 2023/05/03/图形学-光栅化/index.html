@@ -39,7 +39,7 @@
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/talentstream/PictureCDN/OSTEP/20230504212203.png">
 <meta property="article:published_time" content="2023-05-03T05:30:56.000Z">
 <meta property="article:modified_time" content="2024-01-07T12:40:31.610Z">
-<meta property="article:author" content="TALENTSTREAM">
+<meta property="article:author" content="TalentStream">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/talentstream/PictureCDN/OSTEP/20230503140547.png">
     
@@ -168,7 +168,7 @@
 
     <div class="meta">
       <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <span class="p-name" itemprop="name">TALENTSTREAM</span>
+        <span class="p-name" itemprop="name">TalentStream</span>
       </span>
       
     <div class="postdate">
@@ -201,7 +201,7 @@
 <p>在上式，我们找到所对应的关系，我们一开始就将(x0+1,y0+0.5)代入，后面每次计算我们只要累加上述图片的函数后面的一部分就可以省下很多次f(x,y)的计算。因此我们得到以下改进过的伪代码</p>
 <p><img src="https://cdn.jsdelivr.net/gh/talentstream/PictureCDN/OSTEP/20230503220154.png"></p>
 <p>接着我们推广不同的角度的直线，也就是将x，y转化为斜率（0，1）的范围，也就是进行翻转等。下面是milo yip实现的一份很漂亮的代码</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">bresenham</span><span class="params">(<span class="type">int</span> x0, <span class="type">int</span> y0, <span class="type">int</span> x1, <span class="type">int</span> y1)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> dx = <span class="built_in">abs</span>(x1 - x0), sx = x0 &lt; x1 ? <span class="number">1</span> : <span class="number">-1</span>;</span><br><span class="line">    <span class="type">int</span> dy = <span class="built_in">abs</span>(y1 - y0), sy = y0 &lt; y1 ? <span class="number">1</span> : <span class="number">-1</span>;</span><br><span class="line">    <span class="type">int</span> err = (dx &gt; dy ? dx : -dy) / <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// setpixel = draw</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="built_in">setpixel</span>(x0, y0), x0 != x1 || y0 != y1) &#123;</span><br><span class="line">        <span class="type">int</span> e2 = err;</span><br><span class="line">        <span class="keyword">if</span> (e2 &gt; -dx) &#123; err -= dy; x0 += sx; &#125;</span><br><span class="line">        <span class="keyword">if</span> (e2 &lt;  dy) &#123; err += dx; y0 += sy; &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">bresenham</span><span class="params">(<span class="type">int</span> x0, <span class="type">int</span> y0, <span class="type">int</span> x1, <span class="type">int</span> y1)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> dx = <span class="built_in">abs</span>(x1 - x0), sx = x0 &lt; x1 ? <span class="number">1</span> : <span class="number">-1</span>;</span><br><span class="line">    <span class="type">int</span> dy = <span class="built_in">abs</span>(y1 - y0), sy = y0 &lt; y1 ? <span class="number">1</span> : <span class="number">-1</span>;</span><br><span class="line">    <span class="type">int</span> err = (dx &gt; dy ? dx : -dy) / <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// setpixel = draw</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="built_in">setpixel</span>(x0, y0), x0 != x1 || y0 != y1) &#123;</span><br><span class="line">        <span class="type">int</span> e2 = err;</span><br><span class="line">        <span class="keyword">if</span> (e2 &gt; -dx) &#123; err -= dy; x0 += sx; &#125;</span><br><span class="line">        <span class="keyword">if</span> (e2 &lt;  dy) &#123; err += dx; y0 += sy; &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h4 id="三角形的光栅化"><a href="#三角形的光栅化" class="headerlink" title="三角形的光栅化"></a>三角形的光栅化</h4><p>有了直线绘制算法，我们就可以画出一个三角形了，但是如何涂满三角形内部呢。最简单的做法就是判断每个像素点是否在内部，利用叉乘的性质，我们事先知道想要光栅化的三角形的三个顶点P0，P1，P2，以及检测点Q。 只要分别计算 P0P1 × P0Q , P1P2 × P1Q , P2P0 × P2Q ，三者同号就说明必然处于三角形内部，不同号则说明该点一定在三角形外部。但是对全部像素点还是很浪费，可以用包围盒的思路，快速算出包围盒然后对包围盒里的点进行判断即可。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/talentstream/PictureCDN/OSTEP/20230503221856.png"></p>
@@ -310,7 +310,7 @@
     
     
     2024
-    TALENTSTREAM
+    TalentStream
   </div>
   <div class="footer-right">
     <nav>
